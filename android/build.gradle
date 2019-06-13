@@ -1,0 +1,43 @@
+group 'com.example.flutter_myfatoorah'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    dependencies {
+        implementation "com.myfatoorah:myfatoorah:1.0.5"
+        implementation "com.google.code.gson:gson:2.8.5"
+        implementation "com.squareup.retrofit2:retrofit:2.3.0"
+        implementation "com.squareup.retrofit2:converter-gson:2.3.0"
+    }
+}
