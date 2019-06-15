@@ -39,7 +39,7 @@ public class FlutterMyfatoorahPlugin implements MethodCallHandler , PluginRegist
     pendingResult = result;
     if (call.method.equals("payment")) {
       arguments = (Map<String, Object>) call.arguments;
-      Intent intent = new Intent(activity,MyfatoorahActivity.class);
+      Intent intent = new Intent(activity,PaymentActivity.class);
       activity.startActivityForResult(intent,8888);
       //result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else {

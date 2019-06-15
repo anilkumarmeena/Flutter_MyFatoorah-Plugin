@@ -3,7 +3,7 @@
     package="com.example.flutter_myfatoorah">
 
     <application>
-        <activity android:name=".MyfatoorahActivity"></activity>
+        <activity android:name=".PaymentActivity"></activity>
     </application>
 
 </manifest>
