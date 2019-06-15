@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
-
 import com.google.gson.Gson;
 import com.myfatoorah.sdk.MFSDKListener;
 import com.myfatoorah.sdk.model.invoice.InvoiceModel;
@@ -15,29 +14,48 @@ import org.jetbrains.annotations.NotNull;
 
 public class PaymentActivity extends Activity implements MFSDKListener {
 
-    String BASE_URL = "https://apidemo.myfatoorah.com/";
-    String EMAIL = "apiaccount@myfatoorah.com";// Merchant Email
-    String PASSWORD = "api12345*";  // Merchant Password
+    private Boolean Language;
+    private String Name;
+    private double Price;
+    private String payment_method;
+    public static String Ex_BASE_URL = "BASE_URL";
+    public static String Ex_EMAIL = "EMAIL";
+    public static String Ex_PASSWORD = "PASSWORD";
+    public static String Ex_Language = "Language";
+    public static String Ex_Name = "Name";
+    public static String Ex_Price = "Price";
+    public static String Ex_payment = "payment_method";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
         Intent intent = getIntent();
+        String BASE_URL = intent.getStringExtra(Ex_BASE_URL);
+        // Merchant Email
+        String EMAIL = intent.getStringExtra(Ex_EMAIL);
+        // Merchant Password
+        String PASSWORD = intent.getStringExtra(Ex_PASSWORD);
+        payment_method = intent.getStringExtra(Ex_payment);
+        Language = intent.getBooleanExtra(Ex_Language,false);
+        Name = intent.getStringExtra(Ex_Name);
+        Price = intent.getDoubleExtra(Ex_Price,0.0);
         MFSDK.INSTANCE.init(BASE_URL, EMAIL, PASSWORD);
-        pay(false, 200, "anil meena");
+        startpay();
     }
 
-    private void pay(Boolean lang, double price, String name) {
-        InvoiceModel invoiceModel = new InvoiceModel(price, name, Country.KUWAIT, CurrencyISO.Kuwaiti_Dinar_KWD);
-        if (lang) {
+    private void startpay() {
+        InvoiceModel invoiceModel = new InvoiceModel(Price, Name, Country.KUWAIT, CurrencyISO.Kuwaiti_Dinar_KWD);
+        if (Language) {
             invoiceModel.setLanguage(InvoiceLanguage.AR);
-            MFSDK.INSTANCE.createInvoice(this, "en", invoiceModel, PaymentMethod.KNET);
+            MFSDK.INSTANCE.createInvoice(this, "ar", invoiceModel, PaymentMethod.ALL);
         } else {
-            MFSDK.INSTANCE.createInvoice(this, "en", invoiceModel, PaymentMethod.KNET);
+            MFSDK.INSTANCE.createInvoice(this, "en", invoiceModel, payment_method);
         }
     }
-
+    @SuppressWarnings("unused")
     @Override
     public void onSuccess(@NotNull TransactionResponseModel transactionResponseModel) {
         String data = new Gson().toJson(transactionResponseModel);
@@ -52,7 +70,7 @@ public class PaymentActivity extends Activity implements MFSDKListener {
         }
 
     }
-
+    @SuppressWarnings("unused")
     @Override
     public void onFailed(int i, @NotNull String s) {
         String text = "Failed: $statusCode\n\nError Message:\n\n$error";
@@ -66,7 +84,7 @@ public class PaymentActivity extends Activity implements MFSDKListener {
         }
 
     }
-
+    @SuppressWarnings("unused")
     @Override
     public void onCanceled(@NotNull String error) {
         String text = "payment canceled";

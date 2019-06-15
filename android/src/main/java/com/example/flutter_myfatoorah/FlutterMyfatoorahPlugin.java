@@ -40,13 +40,19 @@ public class FlutterMyfatoorahPlugin implements MethodCallHandler , PluginRegist
     if (call.method.equals("payment")) {
       arguments = (Map<String, Object>) call.arguments;
       Intent intent = new Intent(activity,PaymentActivity.class);
+      intent.putExtra(PaymentActivity.Ex_BASE_URL,(String) arguments.get("cred_url"));
+      intent.putExtra(PaymentActivity.Ex_EMAIL,(String) arguments.get("cred_email"));
+      intent.putExtra(PaymentActivity.Ex_PASSWORD,(String) arguments.get("cred_pass"));
+      intent.putExtra(PaymentActivity.Ex_Language,(Boolean) arguments.get("language"));
+      intent.putExtra(PaymentActivity.Ex_Name,(String) arguments.get("name"));
+      intent.putExtra(PaymentActivity.Ex_Price,(double) arguments.get("price"));
+      intent.putExtra(PaymentActivity.Ex_payment,(String)arguments.get("payment_method"));
       activity.startActivityForResult(intent,8888);
-      //result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else {
       result.notImplemented();
     }
   }
-
+  @SuppressWarnings("unused")
   @Override
   public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
     if (requestCode == 8888) {
