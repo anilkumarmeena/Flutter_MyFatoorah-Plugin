@@ -1,3 +1,9 @@
+## 0.0.2
+
+* Android support added.
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+* MyFatoorah Payment Gateway plugin.
+
+
