@@ -1,6 +1,6 @@
 # flutter_myfatoorah
 
-A new flutter plugin project.
+A flutter plugin for integrating MyFatoorah payment gateway. Supports Android and iOS.
 
 ## Getting Started
 
