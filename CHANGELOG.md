@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Ios support added.
+
 ## 0.0.2
 
 * Android support added.

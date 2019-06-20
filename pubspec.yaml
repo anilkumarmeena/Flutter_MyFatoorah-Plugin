@@ -1,8 +1,8 @@
 name: flutter_myfatoorah
 description: A new flutter plugin project.
-version: 0.0.2
-author: Anil Meena <anil98meena@gmail.com>
-homepage: https://flutter.io
+version: 0.0.5
+author: Anil Kumer Meena <anil98meena@gmail.com>
+homepage: https://github.com/anilkumarmeena/Flutter_MyFatoorah-Plugin
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -3,6 +3,7 @@ package com.example.flutter_myfatoorah;
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
+import java.util.*;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.myfatoorah.sdk.MFSDKListener;
@@ -39,7 +40,7 @@ public class PaymentActivity extends Activity implements MFSDKListener {
         // Merchant Password
         String PASSWORD = intent.getStringExtra(Ex_PASSWORD);
         payment_method = intent.getStringExtra(Ex_payment);
-        Language = intent.getIntExtra(Ex_Language,false);
+        Language = intent.getIntExtra(Ex_Language,0);
         Name = intent.getStringExtra(Ex_Name);
         Price = intent.getDoubleExtra(Ex_Price,0.0);
         MFSDK.INSTANCE.init(BASE_URL, EMAIL, PASSWORD);
@@ -73,10 +74,13 @@ public class PaymentActivity extends Activity implements MFSDKListener {
     @SuppressWarnings("unused")
     @Override
     public void onFailed(int i, @NotNull String s) {
-        String text = "Failed: $statusCode\n\nError Message:\n\n$error";
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("Error",s);
+        map.put("responseCode",String.valueOf(i));
+        String data = new Gson().toJson(map);
         try {
             Intent back = new Intent();
-            back.putExtra("data", text);
+            back.putExtra("data", data);
             setResult(Activity.RESULT_CANCELED, back);
             finish();
         } catch (Exception e) {
@@ -87,10 +91,12 @@ public class PaymentActivity extends Activity implements MFSDKListener {
     @SuppressWarnings("unused")
     @Override
     public void onCanceled(@NotNull String error) {
-        String text = "payment canceled";
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("Error","Payment Cancelled");
+        String data = new Gson().toJson(map);
         try {
             Intent back = new Intent();
-            back.putExtra("data", text);
+            back.putExtra("data", data);
             setResult(Activity.RESULT_CANCELED, back);
             finish();
         } catch (Exception e) {

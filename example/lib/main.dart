@@ -25,9 +25,10 @@ class _MyAppState extends State<MyApp> {
     String credUrl = "https://apidemo.myfatoorah.com/";
     String credEmail = "apiaccount@myfatoorah.com";
     String credPass = "api12345*";
-    bool language = false;
+    int language = 0;
     String name = "anil meena";
     double price = 555.0;
+    String paymentMethod = ".all";
     String data;
     Map<dynamic, dynamic> map = {"cred_url":credUrl,
                               "cred_email":credEmail,
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
                               "language":language,
                               "name":name,
                               "price":price,
-                              "payment_method":"kn"};
+                              "payment_method":paymentMethod};
     try {
           data = await FlutterMyfatoorah.payment(map);
         } on PlatformException {
