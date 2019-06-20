@@ -2,69 +2,90 @@ import Flutter
 import UIKit
 import MFSDK
 
-public class SwiftFlutterMyfatoorahPlugin: NSObject, FlutterPlugin, MFInvoiceCreateStatusDelegate {
-  public static func register(with registrar: FlutterPluginRegistrar) {
-    MFSettings.shared.configure(username: "apiaccount@myfatoorah.com", password: "api12345*", baseURL: "https://apidemo.myfatoorah.com/")
-    
-    // You can change title and color of navigation bar, also title and color of dismiss button
-    let them = MFTheme(navigationTintColor: .white, navigationBarTintColor: .lightGray, navigationTitle: "Payment", cancelButtonTitle: "Cancel")
-    
-    MFSettings.shared.setTheme(theme: them)
-    
-    
+
+public class SwiftFlutterMyfatoorahPlugin: NSObject, FlutterPlugin, UINavigationControllerDelegate,MFInvoiceCreateStatusDelegate {
+
+    var results : FlutterResult!
+    var navigationController: UINavigationController!
+
+    override init(){
+        super.init()
+    }
+
+ public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "flutter_myfatoorah", binaryMessenger: registrar.messenger())
     let instance = SwiftFlutterMyfatoorahPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+    
   }
 
-  public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
-  }
-    
-    func setupPayment() {
-        //1- Create invoice model like this:
-        
-        /// - Parameters:
-        ///   - invoiceValue: Invoice amount the customer will pay
-        ///   - customerName: Your customer name
-        ///   - countryCode: Your country code
-        ///   - displayCurrency: Currency will be displayed for the user
-        let invoice = MFInvoice(invoiceValue: 20, customerName: "Test", countryCode: .kuwait, displayCurrency: .Kuwaiti_Dinar_KWD)
-        
-        
-        
-        //2- Create Card model with card info you get from the user:
-        /// - Parameters:
-        ///   - cardExpiryMonth: Card expiry month 2 digits
-        ///   - cardExpiryYear: Card expiry year 2 digits
-        ///   - cardSecurityCode: Card security code 3 digits
-        ///   - cardNumber: Card number
-        let card = MFCard(cardExpiryMonth: "05", cardExpiryYear: "21", cardSecurityCode: "100",cardNumber: "54123458888888889")
-        
-        
-        //3- Pass them to createInvoice method and wait the response from the SDK :
-        /// - Parameters:
-        ///   - invoice: Invoice model
-        ///   - card: Card model
-        ///   - apiLanguage: Language you prefer for getting msg from the API
-        MFPaymentRequest.shared.createInvoice(invoice: invoice, card: card, apiLanguage: .english)
+    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+      results = result
+      if(call.method.elementsEqual("payment"))
+        {
+            let arguments = call.arguments as! NSDictionary
+
+         MFInvoiceCreateStatus.shared.delegate = self
+         MFSettings.shared.configure(username: arguments["cred_email"] as! String, password: arguments["cred_pass"] as! String, baseURL:arguments["cred_url"] as! String)
+         let them = MFTheme(navigationTintColor: .white, navigationBarTintColor: .lightGray, navigationTitle: "Payment", cancelButtonTitle: "Cancel")
+         MFSettings.shared.setTheme(theme: them)
+        let invoice = MFInvoice(invoiceValue: arguments["price"] as! Double, customerName: arguments["name"] as! String, countryCode: .kuwait, displayCurrency: .Kuwaiti_Dinar_KWD)
+        invoice.customerEmail = "a@b.com"// must be email
+        invoice.customerMobile = "mobile no"//Required
+        invoice.customerCivilId = ""
+        invoice.customerBlock = ""
+        invoice.customerStreet = ""
+        invoice.customerHouseBuildingNo = ""
+        invoice.customerReference = ""
+        invoice.language = .arabic
+        invoice.sendInvoiceOption = .sms
+        invoice.apiCustomFileds = ""
+        MFPaymentRequest.shared.createInvoice(invoice: invoice, paymentMethod: .all, apiLanguage: .english)
+        }
+
+    }
+    public func didInvoiceCreateSucess(transaction: MFTransaction) {
+       let encoder = JSONEncoder()
+        do {
+            let jsonData = try encoder.encode(transaction)
+
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                results(jsonString)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
-    //MFOrder status Delegate methods
-    func didInvoiceCreateSucess(transaction: MFTransaction) {
-        print( "Success")
-        print("result: \(transaction)")
-        
+    public func didInvoiceCreateFail(error: MFFailResponse) {
+        var errorDescription = error.errorDescription as String
+        var statusCode  = String(error.statusCode)
+        let dict : Dictionary = ["Error": errorDescription, "responseCode": statusCode]
+        let encoder = JSONEncoder()
+        do {
+            let jsonData = try encoder.encode(dict)
+
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                results(jsonString)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
-    func didInvoiceCreateFail(error: MFFailResponse) {
-        print("responseCode: \(error.statusCode)")
-        print( "Error: \(error.errorDescription)")
-        
+    public func didPaymentCancel() {
+        let dict : Dictionary = ["Error": "Payment Cancelled"]
+        let encoder = JSONEncoder()
+        do {
+            let jsonData = try encoder.encode(dict)
+
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                results(jsonString)
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
-    
-    func didPaymentCancel() {
-        print("Error: Payment Cancelled")
-        
-    }
+
+
 }

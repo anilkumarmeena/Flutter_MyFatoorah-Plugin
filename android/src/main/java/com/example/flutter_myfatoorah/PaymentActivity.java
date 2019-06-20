@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PaymentActivity extends Activity implements MFSDKListener {
 
-    private Boolean Language;
+    private int Language;
     private String Name;
     private double Price;
     private String payment_method;
@@ -39,7 +39,7 @@ public class PaymentActivity extends Activity implements MFSDKListener {
         // Merchant Password
         String PASSWORD = intent.getStringExtra(Ex_PASSWORD);
         payment_method = intent.getStringExtra(Ex_payment);
-        Language = intent.getBooleanExtra(Ex_Language,false);
+        Language = intent.getIntExtra(Ex_Language,false);
         Name = intent.getStringExtra(Ex_Name);
         Price = intent.getDoubleExtra(Ex_Price,0.0);
         MFSDK.INSTANCE.init(BASE_URL, EMAIL, PASSWORD);
@@ -48,7 +48,7 @@ public class PaymentActivity extends Activity implements MFSDKListener {
 
     private void startpay() {
         InvoiceModel invoiceModel = new InvoiceModel(Price, Name, Country.KUWAIT, CurrencyISO.Kuwaiti_Dinar_KWD);
-        if (Language) {
+        if (Language == 1) {
             invoiceModel.setLanguage(InvoiceLanguage.AR);
             MFSDK.INSTANCE.createInvoice(this, "ar", invoiceModel, PaymentMethod.ALL);
         } else {
