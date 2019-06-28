@@ -13,14 +13,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String platformVersion = 'Tap Pay';
+  String result = 'Tap Pay';
 
   @override
   void initState() {
     super.initState();
   }
 
-  Future<void> initPlatformState() async {
+  Future<void> startpayment() async {
     //test credentials
     String credUrl = "https://apidemo.myfatoorah.com/";
     String credEmail = "apiaccount@myfatoorah.com";
@@ -43,7 +43,8 @@ class _MyAppState extends State<MyApp> {
           data = 'Failed';
         }
     setState(() {
-      platformVersion = data;
+      result = data;
+      print(result);
     });
   }
 
@@ -62,11 +63,11 @@ class _MyAppState extends State<MyApp> {
                   color: Colors.grey,
                   child: Text("Pay"), 
                   onPressed: (){
-                    initPlatformState();
+                    startpayment();
                   },
                 ),
                 SizedBox(),
-                Text(platformVersion),
+                Text(result),
               ],
             ),
         ),

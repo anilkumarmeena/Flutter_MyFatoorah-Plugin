@@ -1,26 +1,69 @@
 # MyFatoorah Payment Gateway Plugin
 
-A flutter plugin for integrating MyFatoorah payment gateway. Supports Android and iOS.
+A flutter plugin for integrating MyFatoorah payment gateway. Supports Android and iOS. 
 
 ### Installing
 Add this in pubspec.yaml
 ```
-  razorpay_plugin: ^0.2.9
+  dependencies:
+    flutter_myfatoorah: ^0.0.7
 ```
+### iOS 9+ Specific
+ios developers should add the following to their plist
+```
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSAllowsArbitraryLoadsForMedia</key>
+    <true/>
+    <key>NSAllowsArbitraryLoadsInWebContent</key>
+    <true/>
+</dict>
+```
+
 ### Using
 ```
-import 'package:razorpay_plugin/razorpay_plugin.dart';
+import 'package:flutter_myfatoorah/flutter_myfatoorah.dart';
 ```
 
 ```
+startpayment() async {
+    //Testing Credentials
+    String credUrl = "https://apidemo.myfatoorah.com/";
+    String credEmail = "apiaccount@myfatoorah.com";
+    String credPass = "api12345*";
+    int language = 0;
+    String name = "anil meena";
+    double price = 555.0;
+    String paymentMethod = ".all";
+    var response ;
+    Map<dynamic, dynamic> map = {"cred_url":credUrl,
+                                "cred_email":credEmail,
+                                "cred_pass":credPass,
+                                "language":language,
+                                "name":name,
+                                "price":price,
+                                "payment_method":paymentMethod};
+    try {
+           response = await FlutterMyfatoorah.payment(map);
+        } on PlatformException {
+            print('error');
+        }
+}
+```
+See the ```example``` directory for a complete sample app.
 
-## Getting Started
+### Responses :
+```
+Sucess Response:
+    all data about payment done in json string format
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+Error Response:
+    cancelled by user: {"Error":"Payment Cancelled"}
+    
+    Gateway Errors: {"Error":"ssl error","responseCode":"500"}
+```
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+
+
