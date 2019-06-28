@@ -32,16 +32,8 @@ public class SwiftFlutterMyfatoorahPlugin: NSObject, FlutterPlugin, UINavigation
         let invoice = MFInvoice(invoiceValue: arguments["price"] as! Double, customerName: arguments["name"] as! String, countryCode: .kuwait, displayCurrency: .Kuwaiti_Dinar_KWD)
         invoice.customerEmail = "a@b.com"// must be email
         invoice.customerMobile = "mobile no"//Required
-        invoice.customerCivilId = ""
-        invoice.customerBlock = ""
-        invoice.customerStreet = ""
-        invoice.customerHouseBuildingNo = ""
-        invoice.customerReference = ""
-        invoice.language = .arabic
-        invoice.sendInvoiceOption = .sms
-        invoice.apiCustomFileds = ""
-        MFPaymentRequest.shared.createInvoice(invoice: invoice, paymentMethod: .all, apiLanguage: .english)
-        }
+        invoice.language = MFLanguage.init(rawValue: arguments["price"] as! Int) ?? .english
+        MFPaymentRequest.shared.createInvoice(invoice: invoice, paymentMethod: MFPaymentMethod.init(rawValue:  arguments["payment_method"] as! String) ?? .all, apiLanguage: .english)        }
 
     }
     public func didInvoiceCreateSucess(transaction: MFTransaction) {

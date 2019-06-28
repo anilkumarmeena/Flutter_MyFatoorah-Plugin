@@ -37,6 +37,6 @@ android {
         implementation 'com.myfatoorah:myfatoorah:1.0.5'
         implementation "com.squareup.retrofit2:retrofit:2.3.0"
         implementation "com.squareup.retrofit2:converter-gson:2.3.0"
-        implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+        implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     }
 }
