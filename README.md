@@ -1,6 +1,18 @@
-# flutter_myfatoorah Plugin
+# MyFatoorah Payment Gateway Plugin
 
 A flutter plugin for integrating MyFatoorah payment gateway. Supports Android and iOS.
+
+### Installing
+Add this in pubspec.yaml
+```
+  razorpay_plugin: ^0.2.9
+```
+### Using
+```
+import 'package:razorpay_plugin/razorpay_plugin.dart';
+```
+
+```
 
 ## Getting Started
 
